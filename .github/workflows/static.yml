@@ -33,6 +33,24 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Fix local asset paths
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path("index.html")
+          s = p.read_text(encoding="utf-8")
+          replacements = {
+              r"C:\Users\MG\Downloads\JanaJony💖\elgamal.mp3": "elgamal.mp3",
+              r"C:\Users\MG\Downloads\JanaJony💖\wayah.mp3": "wayah.mp3",
+              r"C:\Users\MG\Downloads\JanaJony💖\Jana  .jpeg": "Jana  .jpeg",
+              r"C:\Users\MG\Downloads\JanaJony💖\Jana .jpeg": "Jana .jpeg",
+              r"C:\Users\MG\Downloads\JanaJony💖\Jana.jpeg": "Jana.jpeg",
+              r"C:\Users\MG\Downloads\JanaJony💖\Jana Jony .jpg": "Jana Jony .jpg",
+          }
+          for old, new in replacements.items():
+              s = s.replace(old, new)
+          p.write_text(s, encoding="utf-8")
+          PY
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
